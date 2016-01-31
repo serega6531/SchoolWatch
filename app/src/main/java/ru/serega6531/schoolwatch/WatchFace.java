@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package ru.serega6531.schoolwatch;
 
 import android.content.BroadcastReceiver;
@@ -266,25 +250,34 @@ public class WatchFace extends CanvasWatchFaceService {
 
         private String getMonthName(int month){
             switch (month){
-                case 0: return "января";
-                case 1: return "февраля";
-                case 2: return "марта";
-                case 3: return "апреля";
+                case 0: return "янв.";
+                case 1: return "фев.";
+                case 2: return "мар.";
+                case 3: return "апр.";
                 case 4: return "мая";
                 case 5: return "июня";
                 case 6: return "июля";
-                case 7: return "августа";
-                case 8: return "сенятбря";
-                case 9: return "октября";
-                case 10: return "ноября";
-                case 11: return "декабря";
+                case 7: return "авг.";
+                case 8: return "сен.";
+                case 9: return "окт.";
+                case 10: return "ноя.";
+                case 11: return "дек.";
             }
 
-            return month + "-ого месяца";
+            return "of " + month;
         }
 
         private String getWeekDayName(int weekDay){
-
+            switch (weekDay){
+                case Time.MONDAY: return "понедельник";
+                case Time.TUESDAY: return "вторник";
+                case Time.WEDNESDAY: return "среда";
+                case Time.THURSDAY: return "черверг";
+                case Time.FRIDAY: return "пятница";
+                case Time.SATURDAY: return "суббота";
+                case Time.SUNDAY: return "воскресьние";
+            }
+            return String.valueOf(weekDay);
         }
 
         private void updateTimer() {
