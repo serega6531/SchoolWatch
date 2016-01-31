@@ -275,7 +275,7 @@ public class WatchFace extends CanvasWatchFaceService {
                 case Time.THURSDAY: return "черверг";
                 case Time.FRIDAY: return "пятница";
                 case Time.SATURDAY: return "суббота";
-                case Time.SUNDAY: return "воскресьние";
+                case Time.SUNDAY: return "воскресенье";
             }
             return String.valueOf(weekDay);
         }
