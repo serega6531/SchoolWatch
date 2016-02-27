@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
 import android.text.format.Time;
@@ -30,8 +31,19 @@ public class WatchFace extends CanvasWatchFaceService {
 
     private static final int MSG_UPDATE_TIME = 0;
 
-    private static final int[] SCHOOL_EVENTS_TIME_LONG = new int[]{t(8, 30), t(9, 15), t(9, 25), t(10,10), t(10, 20), t(11, 5), t(11, 15), t(12, 0), t(12, 20), t(13, 5), t(13, 25), t(14, 10), t(14, 20), t(15, 5)};
-    private static final int[] SCHOOL_EVENTS_TIME_SHORT = new int[]{t(8, 30), t(9, 15), t(9, 25), t(10,10), t(10, 20), t(11, 5), t(11, 15), t(12, 0), t(12, 20), t(13, 5), t(13, 25), t(14, 10)};
+    private static final int[] SCHOOL_EVENTS_TIME_7_LESSONS = new int[]{t(8, 30), t(9, 15), t(9, 25), t(10,10), t(10, 20), t(11, 5), t(11, 15), t(12, 0), t(12, 20), t(13, 5), t(13, 25), t(14, 10), t(14, 20), t(15, 5)};
+    private static final int[] SCHOOL_EVENTS_TIME_6_LESSONS = new int[]{t(8, 30), t(9, 15), t(9, 25), t(10,10), t(10, 20), t(11, 5), t(11, 15), t(12, 0), t(12, 20), t(13, 5), t(13, 25), t(14, 10)};
+    private static final int[] SCHOOL_EVENTS_TIME_5_LESSONS = new int[]{t(8, 30), t(9, 15), t(9, 25), t(10,10), t(10, 20), t(11, 5), t(11, 15), t(12, 0), t(12, 20), t(13, 5)};
+    private static final int[] SCHOOL_EVENTS_TIME_5_LESSONS_SHORT = new int[]{t(8, 30), t(9, 15), t(9, 25), t(10,10), t(10, 20), t(11, 5), t(11, 15), t(12, 0), t(12, 10), t(12, 50)};
+
+    private static final int[][] days = new int[][]{
+            SCHOOL_EVENTS_TIME_7_LESSONS,
+            SCHOOL_EVENTS_TIME_6_LESSONS,
+            SCHOOL_EVENTS_TIME_7_LESSONS,
+            SCHOOL_EVENTS_TIME_6_LESSONS,
+            SCHOOL_EVENTS_TIME_6_LESSONS,
+            SCHOOL_EVENTS_TIME_5_LESSONS_SHORT
+    };
 
     private static int t(int h, int m){
         return h*60 + m;
@@ -199,6 +211,7 @@ public class WatchFace extends CanvasWatchFaceService {
                 if (mLowBitAmbient) {
                     mTextPaint.setAntiAlias(!inAmbientMode);
                     mSubTextPaint.setAntiAlias(!inAmbientMode);
+                    mDateTextPaint.setAntiAlias(!inAmbientMode);
                 }
                 invalidate();
             }
@@ -221,11 +234,18 @@ public class WatchFace extends CanvasWatchFaceService {
             if(d > 0) {
                 int h = mTime.hour;
                 int m = mTime.minute;
-                int total = h * 60 + m;
-                int next;
+                int total = t(h, m);
 
-                boolean longday = d == 1 || d == 3 || d == 4;
-                if((next = getNextEventTimeDiff(total, longday ? SCHOOL_EVENTS_TIME_LONG : SCHOOL_EVENTS_TIME_SHORT)) > 0) {
+                int next = getNextEventTimeDiff(total, d > 0 ? days[d - 1 /* 0 is sunday */] : new int[]{});
+                if(next  > 0) {
+                    if(next == 2){
+                        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                        vibrator.vibrate(500);
+                    } else if(next == 1){
+                        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                        vibrator.vibrate(1000);
+                    }
+
                     text = String.format("Ещё %d м.", next);
                     mTextPaint.setTextSize(textSize);
                 } else {
